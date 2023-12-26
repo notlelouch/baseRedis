@@ -1,12 +1,12 @@
 const net = require("net");
 
-console.log("Logs from your program will appear here!");
-
 const server = net.createServer((connection) => {
   // Handle connection
   connection.on('data', (data) => {
-    connection.write('+PONG\r\n');
-    connection.write('+PONG\r\n');
+    const commands = data.toString().split("\r\n")
+    commands.filter(command => command === "ping").array.forEach(() => {
+      connection.write("+PONG\r\n");
+    });
   });
 });
 
