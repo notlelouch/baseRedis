@@ -6,6 +6,7 @@ const server = net.createServer((connection) => {
   // Handle connection
   connection.on('data', (data) => {
     connection.write('+PONG\r\n');
+    connection.write('+PONG\r\n');
   });
 });
 
