@@ -34,7 +34,7 @@ server.on('connection', (connection) => {
         if (key) {
           let value = hashMap.get(key);
           if (value) {
-            connection.write(`+${value}\r\n`);
+            connection.write(`$${value.length}\r\n${value}\r\n`);
           }
           else {
             connection.write(`-ERR Key not found\r\n`);
