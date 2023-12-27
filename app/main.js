@@ -1,3 +1,4 @@
+let hashMap = new Map();
 const net = require("net");
 
 const server = net.createServer();
@@ -5,22 +6,43 @@ const server = net.createServer();
 server.on('connection', (connection) => {
   console.log("New client connected");
   connection.on('data', (data) => {
-    const commands = data.toString().split("\r\n")
-    
-    commands.filter(command => command === "ping").forEach(() => {
-      connection.write("+PONG\r\n");
-    });
+    const commands = data.toString().split("\r\n");
     commands.forEach((command, index) => {
       
-      if (command.toLocaleUpperCase === "PING") {
+      if (command.toLocaleUpperCase() === "PING") {
         connection.write("+PONG\r\n");
       }
 
-      if (command.toLocaleUpperCase === "ECHO") {
-        let msg = commands[index + 2]
+      else if (command.toLocaleUpperCase() === "ECHO") {
+        let msg = commands[index + 2];
         if (msg) {
           connection.write(`+${msg}\r\n`);
         }
+      }
+
+      else if (command.toLocaleUpperCase() === "SET") {
+        let key = commands[index + 2];
+        let value = commands[index + 4];
+        if (key && value) {
+          hashMap.set(key, value);
+          connection.write(`+OK\r\n`);
+        }
+      }
+
+      else if (command.toLocaleUpperCase() === "GET") {
+        let key = commands[index + 2];
+        if (key) {
+          let value = hashMap.get(key);
+          if (value) {
+            connection.write(`+${value}\r\n`);
+          }
+          else {
+            connection.write(`-ERR Key not found\r\n`);
+          }
+        }
+      }
+      else {
+        connection.write(`-ERR Invalid syntax ${commands}\r\n`);
       }
     });
   });
@@ -29,5 +51,4 @@ server.on('connection', (connection) => {
     console.log("Client disconnected");
   });
 }); 
-
 server.listen(6379, "127.0.0.1");
