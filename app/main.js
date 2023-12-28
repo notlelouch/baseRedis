@@ -14,23 +14,30 @@ server.on('connection', (connection) => {
       }
 
       else if (command.toLocaleUpperCase() === "ECHO") {
-        let msg = commands[index + 2];
+        let msg = commands[index + 4];
         if (msg) {
           connection.write(`+${msg}\r\n`);
         }
       }
 
       else if (command.toLocaleUpperCase() === "SET") {
-        let key = commands[index + 2];
-        let value = commands[index + 4];
+        let key = commands[index + 4];
+        let value = commands[index + 6];
+        let timeout = commands[index + 10]; 
         if (key && value) {
           hashMap.set(key, value);
           connection.write(`+OK\r\n`);
+          if (commands[index + 6].toLocaleUpperCase() === "PX") {
+            if (timeout) {
+              setTimeout(() => {
+                hashMap.delete(key);
+              }, timeout); 
+          }}
         }
       }
 
       else if (command.toLocaleUpperCase() === "GET") {
-        let key = commands[index + 2];
+        let key = commands[index + 4];
         if (key) {
           let value = hashMap.get(key);
           if (value) {
@@ -39,6 +46,9 @@ server.on('connection', (connection) => {
           else {
             connection.write(`-ERR Key not found\r\n`);
           }
+        }
+        else {
+          connection.write(`$-1\r\n`);
         }
       }
       else {
