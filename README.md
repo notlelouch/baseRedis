@@ -57,10 +57,10 @@ You can now send Redis commands to the server.
 
 ## Supported Commands
 
-- **PING:**: Responds with PONG.
-- **ECHO:**: Echoes back the specified message.
-- **SET:**: Sets a key-value pair and optionally supports key expiration.
-- **GET:**: Retrieves the value for a given key.
+- **PING:** Responds with PONG.
+- **ECHO:** Echoes back the specified message.
+- **SET:** Sets a key-value pair and optionally supports key expiration.
+- **GET:** Retrieves the value for a given key.
 
 For a complete list of supported commands and their syntax, refer to the Redis Command Reference.
 
